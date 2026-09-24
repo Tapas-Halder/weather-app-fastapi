@@ -1,7 +1,15 @@
+const form = document.getElementById("searchForm");
+const cityInput = document.getElementById("cityInput");
+const message = document.getElementById("message");
+const card = document.getElementById("weatherCard");
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await getWeather();
+});
+
 async function getWeather() {
-    const city = document.getElementById("cityInput").value.trim();
-    const message = document.getElementById("message");
-    const card = document.getElementById("weatherCard");
+    const city = cityInput.value.trim();
 
     if (!city) {
         message.textContent = "Please enter a city name.";
@@ -9,30 +17,31 @@ async function getWeather() {
         return;
     }
 
-    message.textContent = "Loading...";
+    message.textContent = "Searching...";
     card.classList.add("hidden");
 
     try {
-        // JavaScript calls our FastAPI backend
+        // Call our FastAPI backend.
+        // Relative URL works both locally and on Render.
         const response = await fetch(
-            "http://127.0.0.1:8000/weather?city=" + encodeURIComponent(city)
+            "/weather?city=" + encodeURIComponent(city)
         );
 
         const data = await response.json();
 
-        if (data.error) {
-            message.textContent = data.error;
+        if (!response.ok || data.error) {
+            message.textContent = data.error || "Something went wrong.";
             return;
         }
 
         document.getElementById("city").textContent =
             data.city + ", " + data.country;
 
-        document.getElementById("weather").textContent =
-            data.weather;
-
         document.getElementById("temperature").textContent =
             data.temperature + "°C";
+
+        document.getElementById("weather").textContent =
+            data.weather;
 
         document.getElementById("feelsLike").textContent =
             data.feels_like;
@@ -43,10 +52,13 @@ async function getWeather() {
         document.getElementById("wind").textContent =
             data.wind_speed;
 
+        document.getElementById("weatherIcon").src =
+            "https://openweathermap.org/img/wn/" + data.icon + "@2x.png";
+
         message.textContent = "";
         card.classList.remove("hidden");
 
     } catch (error) {
-        message.textContent = "Could not connect to FastAPI.";
+        message.textContent = "Could not connect to the weather server.";
     }
 }
