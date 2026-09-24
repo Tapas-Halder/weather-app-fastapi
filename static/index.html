@@ -4,29 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🌤️ Weather App</h1>
+    <main class="app">
+        <section class="hero">
+            <p class="eyebrow">LIVE WEATHER</p>
+            <h1>Weather <span>Today</span></h1>
+            <p class="subtitle">Search any city and see the current weather.</p>
 
-        <div class="search-box">
-            <input id="cityInput" type="text" placeholder="Enter city name">
-            <button onclick="getWeather()">Search</button>
-        </div>
+            <form id="searchForm" class="search-box">
+                <input id="cityInput" type="text" placeholder="Enter city name..." autocomplete="off">
+                <button type="submit">Search</button>
+            </form>
 
-        <p id="message"></p>
+            <p id="message"></p>
+        </section>
 
-        <div id="weatherCard" class="weather-card hidden">
-            <h2 id="city"></h2>
-            <p id="weather"></p>
-            <h3 id="temperature"></h3>
-            <p>Feels like: <span id="feelsLike"></span>°C</p>
-            <p>Humidity: <span id="humidity"></span>%</p>
-            <p>Wind: <span id="wind"></span> m/s</p>
-        </div>
-    </div>
+        <section id="weatherCard" class="weather-card hidden">
+            <div class="location">
+                <div>
+                    <p class="label">CURRENT WEATHER</p>
+                    <h2 id="city"></h2>
+                </div>
+                <img id="weatherIcon" src="" alt="Weather icon">
+            </div>
 
-    <script src="script.js"></script>
+            <div class="main-weather">
+                <div>
+                    <p id="temperature" class="temperature">--°C</p>
+                    <p id="weather" class="condition">--</p>
+                </div>
+            </div>
+
+            <div class="details">
+                <div><span>🌡️ Feels like</span><strong><span id="feelsLike">--</span>°C</strong></div>
+                <div><span>💧 Humidity</span><strong><span id="humidity">--</span>%</strong></div>
+                <div><span>💨 Wind</span><strong><span id="wind">--</span> m/s</strong></div>
+            </div>
+        </section>
+
+        <footer>Powered by OpenWeather • FastAPI</footer>
+    </main>
+
+    <script src="/static/script.js"></script>
 </body>
 </html>
