@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Query
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import httpx
@@ -8,7 +9,7 @@ load_dotenv()
 
 app = FastAPI(title="Weather App API")
 
-# Allow our simple frontend to call FastAPI
+# Allow the frontend to call our FastAPI backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,15 +19,19 @@ app.add_middleware(
 
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
+
 @app.get("/")
 def home():
-    return {"message": "Weather App API is running"}
+    # Show our HTML website
+    return FileResponse("static/index.html")
+
 
 @app.get("/weather")
 async def get_weather(city: str = Query(..., min_length=1)):
     if not OPENWEATHER_API_KEY:
         return {"error": "OPENWEATHER_API_KEY is missing"}
 
+    # OpenWeather API URL
     url = "https://api.openweathermap.org/data/2.5/weather"
 
     params = {
@@ -43,6 +48,7 @@ async def get_weather(city: str = Query(..., min_length=1)):
 
     data = response.json()
 
+    # Send only the data our website needs
     return {
         "city": data["name"],
         "country": data["sys"]["country"],
